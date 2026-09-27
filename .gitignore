@@ -1,0 +1,14 @@
+bin/
+obj/
+*.user
+.vs/
+node_modules/
+*.log
+*.tsbuildinfo
+
+# Local Phase 0 runtime artifacts — never commit real credentials or your local DB
+src/ApplyEngine.Phase0/appsettings.json
+src/ApplyEngine.Api/appsettings.json
+src/ApplyEngine.Phase0/applyengine.db
+src/ApplyEngine.Phase0/digest-output.txt
+*.db

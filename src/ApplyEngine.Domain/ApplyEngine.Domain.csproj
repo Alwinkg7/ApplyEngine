@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ApplyEngine.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    Deliberately zero PackageReferences.
+
+    This project holds every piece of logic that does NOT need to talk to a
+    network, a database, or a mail server: entities, normalization, dedupe,
+    keyword filtering, RSS/Atom parsing (via System.Xml.Linq, which ships in
+    the BCL), and digest text formatting.
+
+    Keeping it dependency-free means it builds and runs anywhere .NET 8 runs,
+    with no NuGet restore step, which is also why tools/ApplyEngine.SelfCheck
+    can exercise the real pipeline logic even in network-locked environments.
+    ApplyEngine.Infrastructure references this project and adds the IO layer
+    of EF Core, HtmlAgilityPack, and MailKit around it.
+  -->
+
+</Project>

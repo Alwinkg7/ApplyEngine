@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f7f6;
+  --foreground: #172321;
+  --ink-muted: #667873;
+  --line: #dce7e3;
+  --surface: #ffffff;
+  --surface-soft: #edf4f1;
+  --teal: #0f766e;
+  --teal-dark: #115e59;
+  --coral: #d8664a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Avenir Next", "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: #b9e2d8;
+  color: #123b37;
+}
+
+button,
+a,
+input {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid #9ad7ca;
+  outline-offset: 3px;
+}
+
+/* All custom, non-utility classes below are deliberately wrapped in Tailwind
+   v4's "components" layer. Reason: any plain CSS written outside a @layer
+   block always wins the cascade over anything inside @layer utilities — a
+   real Tailwind v4 rule, regardless of specificity or where each rule sits
+   in the file. .surface's plain `border`/`box-shadow` were beating
+   print:border-0/print:shadow-none on the Queue detail page's resume print
+   view for exactly this reason (the resume still showed a boxed border/
+   shadow in the saved PDF even though those print: utilities were present).
+   Tailwind's layer order is theme, base, components, utilities — utilities
+   always beats components — so moving these into @layer components is what
+   actually lets print: (and any other) utility override them. */
+@layer components {
+  .app-shell {
+    background:
+      radial-gradient(circle at 80% 0%, #e1f1ec 0, transparent 33rem),
+      var(--background);
+  }
+
+  .app-nav {
+    background: rgba(255, 255, 255, 0.86);
+    border-color: var(--line);
+    backdrop-filter: blur(16px);
+  }
+
+  .nav-link {
+    color: var(--ink-muted);
+  }
+
+  .nav-link:hover {
+    color: var(--teal);
+  }
+
+  .nav-mark {
+    color: var(--teal-dark);
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow {
+    color: var(--teal);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .surface {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 14px 34px rgba(27, 67, 59, 0.06);
+  }
+
+  .muted {
+    color: var(--ink-muted);
+  }
+
+  .primary-action {
+    background: var(--teal);
+    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.18);
+  }
+
+  .primary-action:hover {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+  }
+
+  .status-message {
+    background: #fff4ec;
+    border: 1px solid #f2c8b6;
+    color: #9a432f;
+  }
+
+  .empty-state {
+    border: 1px dashed #bfd3cd;
+    background: rgba(255, 255, 255, 0.58);
+    color: var(--ink-muted);
+  }
+}

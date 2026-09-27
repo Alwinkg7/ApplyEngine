@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/ApplyEngine.Domain/ApplyEngine.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="../../fixtures/sample-feed.rss" Link="fixtures/sample-feed.rss" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    No other PackageReferences. This project exists so the Domain pipeline
+    logic (normalize -> dedupe -> filter -> parse -> digest) can be built and
+    run with `dotnet run` in any environment, including ones where NuGet
+    restore is unavailable. It is not a substitute for real xUnit tests —
+    see README.md for adding those once you have full package access.
+  -->
+
+</Project>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Sample Kerala IT Job Feed</title>
+    <link>https://example.com/jobs</link>
+    <description>Fixture feed used by ApplyEngine.SelfCheck</description>
+
+    <item>
+      <title>.NET Backend Developer at Brightlane Technologies</title>
+      <link>https://example.com/jobs/1234?utm_source=feed&amp;utm_medium=rss&amp;ref=homepage</link>
+      <description>&lt;p&gt;We need a .NET Core / ASP.NET engineer with SQL Server experience for our Kochi office. 3-5 years experience. Hybrid, Kochi.&lt;/p&gt;</description>
+      <pubDate>Mon, 24 Aug 2026 09:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Senior React Developer - PixelForge Studios</title>
+      <link>https://example.com/jobs/1235</link>
+      <description>&lt;p&gt;Frontend role, React and TypeScript, fully remote, no backend work.&lt;/p&gt;</description>
+      <pubDate>Mon, 24 Aug 2026 08:30:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>Full Stack Engineer (.NET + Next.js) at Trivandrum Cloudworks</title>
+      <link>https://example.com/jobs/1236?src=alert&amp;trackingId=abc123</link>
+      <description>&lt;p&gt;ASP.NET Core API, EF Core, Next.js dashboard, SQL Server. 2-4 years. Trivandrum, on-site.&lt;/p&gt;</description>
+      <pubDate>Sun, 23 Aug 2026 18:00:00 GMT</pubDate>
+    </item>
+
+    <item>
+      <title>.NET Backend Developer at Brightlane Technologies</title>
+      <link>https://example.com/jobs/1234?utm_source=another-crawl&amp;utm_campaign=x</link>
+      <description>&lt;p&gt;Same posting, re-crawled with different tracking params — should dedupe to the same job as item 1.&lt;/p&gt;</description>
+      <pubDate>Mon, 24 Aug 2026 09:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

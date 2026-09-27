@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>ApplyEngine.Infrastructure</RootNamespace>
+		<UserSecretsId>f8807065-43f8-4585-bcb2-ec37910f1ec1</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../ApplyEngine.Domain/ApplyEngine.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Your three real resume variants, shipped as embedded resources rather than
+         loose files copied to the output directory — a ProjectReference's content
+         files aren't reliably copied transitively into a *referencing* project's
+         output (Phase0's), and an embedded resource sidesteps that entirely: it's
+         baked into ApplyEngine.Infrastructure.dll itself, so it's always found
+         regardless of working directory, publish mode, or where Phase0 ends up
+         running from. ResumeVariantStore reads these as the built-in default and
+         only falls back to an external file path when AppConfig.ResumeVariants
+         actually points at one — see its remarks for why you'd want that. -->
+		<EmbeddedResource Include="Resumes\*.md" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- SQL Server persistence — the production target from the spec, and the
+         instance you're already running locally. -->
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+
+		<!-- HTML board parsing (Layer 1, "friendly sources") -->
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
+
+		<!-- IMAP alert-email reading + SMTP digest/application sending.
+         Pinned >= a version past the GHSA-9j88-vvj5-vhgr advisory. -->
+		<PackageReference Include="MailKit" Version="4.9.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+
+		<!-- JS-rendered board fetching (e.g. infoparkdaily.online/jobs/) — the same
+         browser-automation tool the spec scopes for Phase 3's portal submission
+         engine, used here first in its simplest read-only role. -->
+		<PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
+		<PackageReference Include="QuestPDF" Version="2026.9.0" />
+
+		<!-- Core logging types only (no sinks here) — Phase0's Program.cs owns the
+         actual logger configuration (console + file); this project just calls
+         Serilog.Log.* against whatever logger Phase0 set up as Log.Logger. -->
+		<PackageReference Include="Serilog" Version="4.0.2" />
+	</ItemGroup>
+
+</Project>

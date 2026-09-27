@@ -1,0 +1,116 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+
+  "DryRun": false,
+  "ConnectionString": "Server=localhost;Database=ApplyEngine;Trusted_Connection=True;TrustServerCertificate=True",
+  "Sources": [
+    {
+      "Name": "TechnoparkBoard",
+      "Type": "HtmlBoard",
+      "Endpoint": "https://www.technopark.org/job-search",
+      "Enabled": false
+    },
+    {
+      "Name": "InfoparkBoard",
+      "Type": "HtmlBoard",
+      "Endpoint": "https://infopark.in/companies/job-search",
+      "Enabled": false
+    },
+    {
+      "Name": "InfoparkDailyJobs",
+      "Type": "JsRenderedBoard",
+      "Endpoint": "https://infoparkdaily.online/jobs/",
+      "Enabled": false
+    },
+    {
+      "Name": "AlertMailbox",
+      "Type": "ImapAlert",
+      "Endpoint": "imap",
+      "Enabled": true
+    }
+  ],
+
+  "HtmlBoards": {
+    "TechnoparkBoard": {
+      "_comment": "PLACEHOLDER — both the Endpoint above and these XPaths are unverified (built with no live access to the real site). Open the real board, confirm the listings URL, inspect one listing, and replace all of this. See README 'Wiring up a real HTML board'.",
+      "ItemXPath": "//div[contains(@class,'job-listing')]",
+      "TitleXPath": ".//h3",
+      "CompanyXPath": ".//span[contains(@class,'company')]",
+      "LocationXPath": ".//span[contains(@class,'location')]",
+      "LinkXPath": ".//a",
+      "LinkAttribute": "href",
+      "BaseUrl": "https://www.technopark.org"
+    },
+    "InfoparkBoard": {
+      "_comment": "PLACEHOLDER — same caveat as TechnoparkBoard: Endpoint and XPaths are unverified guesses, not inspected against the real site. Confirm the real job-listings URL first (it may live under a different path, or job postings may only be listed per-company rather than on one central board — check before wiring this up).",
+      "ItemXPath": "//div[contains(@class,'job-listing')]",
+      "TitleXPath": ".//h3",
+      "CompanyXPath": ".//span[contains(@class,'company')]",
+      "LocationXPath": ".//span[contains(@class,'location')]",
+      "LinkXPath": ".//a",
+      "LinkAttribute": "href",
+      "BaseUrl": "https://infopark.in"
+    }
+  },
+
+  "JsRenderedBoards": {
+    "InfoparkDailyJobs": {
+      "_comment": "PLACEHOLDER — infoparkdaily.online/jobs/ is client-rendered (confirmed: a plain HTTP fetch returns an empty shell, no WordPress/RSS). CSS selectors here are illustrative only. Open the page in a real browser, inspect one job card, and replace these. WaitForSelector should be the job-card selector itself, so Playwright waits for the client-side render to actually finish before scraping. See README 'Wiring up a JS-rendered board (Playwright)'.",
+      "ItemSelector": "[class*=job-card], [class*=JobCard]",
+      "TitleSelector": "h2, h3",
+      "CompanySelector": "[class*=company]",
+      "LocationSelector": "[class*=location]",
+      "LinkSelector": "a",
+      "WaitForSelector": "[class*=job-card], [class*=JobCard]",
+      "BaseUrl": "https://infoparkdaily.online"
+    }
+  },
+
+  "Imap": {
+    "_comment": "Only needed once AlertMailbox is enabled. Use a Google App Password (Google Account -> Security -> 2-Step Verification -> App passwords) — NEVER your real Google account password. Generate it fresh; do not reuse a password that has ever been typed into a chat, ticket, or shared doc.",
+    "Host": "imap.gmail.com",
+    "Port": 993,
+    "Username": "REPLACE_WITH_YOUR_EMAIL",
+    "Password": "REPLACE_WITH_APP_PASSWORD",
+    "TrustedSenderDomains": [ "linkedin.com", "naukri.com", "indeed.com" ],
+    "ProcessedFolderName": "ApplyEngine-Processed"
+  },
+
+  "Smtp": {
+    "_comment": "Only needed once DryRun is false. Same App Password as above — Gmail/Outlook both work over STARTTLS on 587.",
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "Username": "REPLACE_WITH_YOUR_EMAIL",
+    "Password": "REPLACE_WITH_APP_PASSWORD",
+    "FromAddress": "REPLACE_WITH_YOUR_EMAIL",
+    "ToAddress": "REPLACE_WITH_YOUR_EMAIL"
+  },
+
+  "Llm": {
+    "ApiKey": "REPLACE_WITH_YOUR_API_KEY",
+    "Endpoint": "https://api.groq.com/openai/v1/chat/completions",
+    "Model": "openai/gpt-oss-20b"
+  },
+
+  "Preferences": {
+    "Version": 1,
+    "MustHaveKeywords": [ ".NET", "ASP.NET", "C#", "Full Stack" ],
+    "NiceToHaveKeywords": [ "Next.js", "React", "Azure", "TypeScript" ],
+    "Locations": [ "Kochi", "Trivandrum", "Kerala", "Bangalore" ],
+    "WorkModes": [ "Remote", "Hybrid" ],
+    "ExcludeCompanies": [],
+    "SalaryFloorPerAnnum": 400000,
+    "ExperienceMinYears": 1,
+    "ExperienceMaxYears": 2,
+    "QualificationRequirement": "Ignore",
+    "MinFitScore": 60,
+    "ProfileSummary": "REPLACE — a few sentences about yourself: years of experience, core stack, the kind of role you want. E.g. '1 years as a .NET backend developer building ASP.NET Core APIs and SQL Server-backed services; comfortable with React/Next.js on the front end; looking for a full-stack or backend-leaning role, remote or Kochi/Trivandrum based.'"
+  }
+
+}
