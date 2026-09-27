@@ -10,12 +10,12 @@ namespace ApplyEngine.Infrastructure.Resumes;
 /// QuestPDF.Settings.License = LicenseType.Community once at process startup, see Program.cs).
 ///
 /// Deliberately mirrors dashboard/lib/markdown.ts's parsing rules exactly (same subset: headings
-/// #/##/###, **bold** inline spans, "-"/"*" bullet lists, plain paragraphs; blank lines separate
-/// blocks) so what gets emailed/downloaded as a PDF looks like the same document the dashboard's
-/// Queue detail page already renders as HTML — not a general Markdown renderer, and not meant to
-/// become one. If ResumeTailor's prompt ever starts producing Markdown features outside that
-/// subset (tables, links, nested lists, etc.), both this file and markdown.ts need updating
-/// together or the two views will silently diverge.
+/// #/##/###, **bold** inline spans, *italic* spans, [text](url) links, "-"/"*" bullet lists, plain
+/// paragraphs; blank lines separate blocks) so what gets emailed/downloaded as a PDF looks like the
+/// same document the dashboard's Queue detail page already renders as HTML — not a general
+/// Markdown renderer, and not meant to become one. If ResumeTailor's prompt ever starts producing
+/// Markdown features outside that subset (tables, nested lists, etc.), both this file and
+/// markdown.ts need updating together or the two views will silently diverge.
 ///
 /// This replaces the earlier text/plain resume attachment (see ApplicationEmailSender's original
 /// remarks) and the browser-print-to-PDF-only workflow on the dashboard.
@@ -33,11 +33,10 @@ public static class ResumePdfRenderer
                 page.Size(PageSizes.A4);
                 page.Margin(36);
                 // Lato, not Arial: QuestPDF only ships/registers Lato out of the box (bundled via
-                // its own QuestPDF.Fonts.Lato dependency — see the exception this line used to
-                // throw when a build's Registered fonts list was just 'codicon'/'Lato' and Arial
-                // wasn't in it). Arial isn't installed on the machine running this API, and
-                // Settings.UseSystemFonts is (deliberately) left disabled, so Lato is the one
-                // font guaranteed to render correctly wherever this API is actually deployed.
+                // its own QuestPDF.Fonts.Lato dependency). Arial isn't installed on the machine
+                // running this API, and Settings.UseSystemFonts is (deliberately) left disabled,
+                // so Lato is the one font guaranteed to render correctly wherever this API is
+                // actually deployed.
                 page.DefaultTextStyle(x => x.FontSize(10).FontFamily(Fonts.Lato));
 
                 page.Content().Column(column =>
@@ -143,18 +142,36 @@ public static class ResumePdfRenderer
         return blocks;
     }
 
-    // Splits on **bold** spans (same regex intent as markdown.ts's inline()) and composes each
-    // run as its own QuestPDF TextSpan, bolding the parts that were wrapped in "**".
+    // Splits on **bold**, *italic*, and [text](url) link spans (same regex intent as
+    // markdown.ts's inline()) and composes each run as its own QuestPDF TextSpan.
     private static void ComposeInline(TextDescriptor text, string raw, float baseSize, bool bold)
     {
-        // Bold spans ("**...**") before italic spans ("*...*") in the alternation, same ordering
-        // reason as markdown.ts's inline(): the regex engine tries the first alternative at each
-        // position before the second, so a "**bold**" pair is always claimed by the bold branch
-        // and never misread as two adjacent italic markers.
-        var parts = System.Text.RegularExpressions.Regex.Split(raw, @"(\*\*.+?\*\*|\*.+?\*)");
+        // Bold ("**...**"), then italic ("*...*"), then links ("[text](url)") in the
+        // alternation — same "regex tries alternatives in order" reasoning as before: a
+        // "**bold**" pair is claimed by the first branch before the looser single-asterisk
+        // italic branch ever sees it. Link syntax uses a completely different character set
+        // ([ ] ( )), so it never collides with either.
+        var parts = System.Text.RegularExpressions.Regex.Split(raw, @"(\*\*.+?\*\*|\*.+?\*|\[.+?\]\(.+?\))");
         foreach (var part in parts)
         {
             if (part.Length == 0) continue;
+
+            // NOTE: QuestPDF's TextSpanDescriptor.Hyperlink(text, url) API is used here to make
+            // resume contact links (LinkedIn/GitHub/portfolio) real clickable links in the PDF,
+            // not just visible-looking text. This project's sandbox has no NuGet access (a real
+            // `dotnet build` has never run here — see this file's git history), so this specific
+            // call is UNVERIFIED against your actual installed QuestPDF version. If it fails to
+            // compile, check QuestPDF's docs for the exact Hyperlink method signature on your
+            // version and adjust this one call — everything else in this file is unchanged from
+            // what you've already built successfully.
+            var linkMatch = System.Text.RegularExpressions.Regex.Match(part, @"^\[(.+)\]\((.+)\)$");
+            if (linkMatch.Success)
+            {
+                var linkSpan = text.Hyperlink(linkMatch.Groups[1].Value, linkMatch.Groups[2].Value);
+                linkSpan.FontSize(baseSize);
+                if (bold) linkSpan.Bold();
+                continue;
+            }
 
             var boldMatch = System.Text.RegularExpressions.Regex.Match(part, @"^\*\*(.+)\*\*$");
             var italicMatch = boldMatch.Success ? null : System.Text.RegularExpressions.Regex.Match(part, @"^\*(.+)\*$");

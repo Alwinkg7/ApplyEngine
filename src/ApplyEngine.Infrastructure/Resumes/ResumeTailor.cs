@@ -176,8 +176,14 @@ public class ResumeTailor
             "STRICT RULES: never invent experience, employers, job titles, dates, degrees, certifications, " +
             "or skills that are not already present in the given resume; never change any employer name, " +
             "date range, or numeric claim (percentages, counts) from the original; do not lengthen the " +
-            "resume beyond its original scope — trim rather than pad. Respond with ONLY the tailored " +
-            "resume as Markdown, no commentary before or after, no code fences.";
+            "resume beyond its original scope — trim rather than pad. " +
+            "HEADER RULE (do not skip this): the very first line(s) of the resume are the candidate's name " +
+            "and contact/header block (location, email, phone, and any [text](url) Markdown links such as " +
+            "LinkedIn, GitHub, or a portfolio site). Copy this header EXACTLY as it appears in the input, " +
+            "character-for-character, including every [text](url) link in its original Markdown link " +
+            "syntax — never omit it, never shorten it, never convert a link to plain text, and never treat " +
+            "it as trimmable padding. The header is the one part of this resume that must never change. " +
+            "Respond with ONLY the tailored resume as Markdown, no commentary before or after, no code fences.";
 
         var userPrompt = new StringBuilder();
         userPrompt.AppendLine("## Candidate's current resume (Markdown)");
